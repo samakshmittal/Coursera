@@ -1,14 +1,17 @@
-#include<stdio.h>
-#include<math.h>
-int main(void)
+#include <stdio.h>
+#include <math.h>
+
+int main()
 {
-	float i;
-    printf("Enter value");
-    scanf("%f", &i);
-
-	if (i>0 && i<1){
-		printf("sine(%f)=%f\n", i, sin(i));
-	}	
-
-return 0;
-}
+  double sinValue, number;
+  printf(" Please Enter the Value to calculate Sine :  ");
+  scanf("%lf", &number);
+  if(number>0 && number<1){
+    sinValue = sin(number);
+    printf("\n The Sine value of %lf = %f ", number, sinValue);
+  }
+  else{
+    printf("Wrong input");
+  }
+  return 0;
+  }
