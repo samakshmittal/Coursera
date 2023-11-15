@@ -1,0 +1,178 @@
+#include <stdio.h> //preprocessing
+#include <stdlib.h>
+#include <ctype.h>
+
+#define NUMBER_OF_INT 200
+#define RANDOM_RANGE 49
+#define PRINT_PER_ROW 5
+
+//struct
+typedef struct list{
+    struct list* next;
+    struct list* prev;
+    int data;
+
+} list;
+
+int random_number(){
+    //generate a random number below the random range
+    return (rand()/(RAND_MAX/RANDOM_RANGE));
+}
+
+ list* create_list(int d){
+    list* new_list = malloc(sizeof(list));
+
+    new_list->data = d;
+    new_list->next = NULL;
+    new_list->prev = NULL;
+
+    return (new_list);
+ }
+
+list* add_to_front(int d, list* h){
+    list* new_list = create_list(d);
+    h->prev = new_list;
+    new_list->next = h;
+
+    
+
+    return new_list;
+}
+
+ int is_empty(list* h){
+    return (h == NULL);
+ }
+
+ list* add_array_to_list(int arr[], list* h, int size, int count){
+    
+    if(count<size){ // not at the end of arr
+        list* head = add_to_front(arr[count], h);
+        count++;
+   
+        add_array_to_list(arr, head, size, count);
+    }else{ //reached end of arr
+        
+        return (h);
+    }
+ }
+
+ void print_list(list* h, char* title, int prints_per_row){
+    printf("%s\n\n",title);
+    int i = 0;
+    while(h !=NULL){
+        i++;
+
+        //testing doubly linked list
+        // int prev_data = 0;
+        // if(h->prev==NULL){
+        //     prev_data = -1;
+        // }else{
+        //     prev_data = (h->prev)->data;
+        // }
+
+        // int next_data = 0;
+        // if(h->next == NULL){
+        //     next_data = -1;
+        // }else{
+        //     next_data = (h->next)->data;
+        // }
+       
+      
+        // printf("current: %d  next: %d  prev: %d   ;", h->data, next_data, prev_data);
+
+        printf("%d ", h->data);
+        if(i == prints_per_row){
+            i = 0;
+            printf("\n");
+        }
+
+        h = h->next; 
+    }
+
+ }
+ //recursive bubble sort
+ void sort(list* start, int size){
+    list* h = start;
+    int i = 0;
+    while(i<size){
+        i++;
+        int current_d = h -> data;
+        list* next_h = h->next;
+        if(next_h -> data < current_d){
+            //swap the elements
+            h->data=(next_h->data);
+            next_h->data = current_d;
+        }
+        h= h->next;
+        if(h->next==NULL){
+            break;
+        }
+    }
+    if(size!=0){
+    sort(start, --size);
+    }
+ }
+
+void remove_node(list* h){
+    
+    list* n = h->next;
+    list* p = h->prev;
+    if(h->next !=NULL){
+        h->next->prev = p;
+    }
+    if(h->prev !=NULL){
+        h->prev->next = n;
+    }
+    h->prev =NULL;
+    h->next=NULL;
+    
+    
+}
+list* remove_dup_from_list(list* h){
+   
+    while(h -> next != NULL){
+        list* current_h = h;
+       
+        if(current_h->data == current_h->next->data){
+            //move the head
+            h = h->next;
+            //invoke remove
+            remove_node(current_h);
+             
+        }else{
+            h=h->next;
+        }
+    
+    }
+    while(h->prev !=NULL){
+        h=h->prev;
+    }
+    return h;
+}
+
+
+ int main(){
+    int rand_int_arr[NUMBER_OF_INT];
+    int i;
+    //generate an array of random integers
+    for(i=0;i<NUMBER_OF_INT;i++){
+        rand_int_arr[i] = random_number();
+      
+    }
+
+    //init the list
+    list* head = create_list(rand_int_arr[0]);
+    //invoke add array
+    head = add_array_to_list(rand_int_arr,head,NUMBER_OF_INT,1);
+
+    //print results
+    print_list(head, "Unsorted Random Numbers:",PRINT_PER_ROW);
+    printf("\n\n");
+    sort(head,NUMBER_OF_INT);
+    print_list(head, "Sorted Random Numbers:",PRINT_PER_ROW);
+    printf("\n\n");
+    head = remove_dup_from_list(head);
+    print_list(head, "Sorted Unique Random Numbers:",PRINT_PER_ROW);
+    printf("\n\n");
+    return 0;
+ }
